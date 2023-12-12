@@ -1,4 +1,4 @@
-main {
+body {
     width: 80vw;
     margin-left: 10vw;
     margin-right: 10vw;
@@ -8,20 +8,32 @@ rehersal-viz {
     width: 300px;
     height: 300px;
     border-style: solid;
-    display: flex;
+    display: grid;
 
     --line-height: 30px;
+    --cell-width: 30px;
+    grid-template-columns: auto auto;
+    grid-template-rows: var(--line-height) auto;
+
 }
 
-tune-name-list {
-    padding-top: var(--line-height);
+date-line {
+    heigth: var(--line-height);
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.tune-name-list {
     font-size: 16px;
-    width: 10em;
+    width: 100%;
     display: flex;
     flex-direction: column;
+    grid-column: 1;
+    grid-row: 2;
 }
 
-tune-name-list .tune-name {
+.tune-name-list .tune-name {
+    width: var(--line-width);
     height: var(--line-height);
 }
 
@@ -29,14 +41,10 @@ tune-timeline {
     width: 100%;
     display: flex;
     flex-direction: column;
+    grid-column: 2;
+    grid-row: 2;
 }
 
-
-date-line {
-    height: var(--line-height);
-    width: 100%;
-    display: flex;
-}
 
 date-line span {
     flex-grow: 1;

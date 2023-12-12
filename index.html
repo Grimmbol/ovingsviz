@@ -1,24 +1,33 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="./meyer-reset.css"/>
     <link rel="stylesheet" href="./styles.css"/>
   </head>
   <body>
-    <title>
-      Låtprogresjon
-    </title>
+    <header>
+      <h1>Låtprogresjon</h1>
+    </header>
     <main>
       <rehersal-viz>
-	<tune-name-list>
+	<ol class="tune-name-list">
 	  <span class="tune-name">Eklundapolska</span>
 	  <span class="tune-name">Rugen</span>
-	</tune-name-list>
-	<tune-timeline>
-	  <date-line>
+	</ol>
+	 <date-line>
 	    <span>1. januar</span>
 	    <span>8. januar</span>
 	    <span>15. januar</span>
 	  </date-line>
+	 <tune-timeline>
+	   <div class="timeline-row">
+	     <span class="segment"></span>
+	     <span class="segment"></span>
+	   </div>
+	   <div class="timeline-row">
+	     <span class="segment"></span>
+	     <span class="segment"></span>
+	   </div>
 	</tune-timeline>
       </rehersal-viz>
     </main>
