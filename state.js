@@ -1,15 +1,81 @@
-const contentWrapper = document.querySelector("main")
-const legalStates = ["bad", "ok", "good", "banger"]
-const timelineRowStates = createRandomTimelineStates(20, 20) 
+const dataDisplayWrapper = document.querySelector("rehersal-viz")
+const statsDisplayWrapper = document.querySelector("stats")
+const generateButton = document.querySelector("header .generate")
+let data = null
+let stats = null
 
-for (timelineRowState of timelineRowStates) {
-  const timelineRow = createTimelineRowFromState(timelineRowState)
-  contentWrapper.append(timelineRow)
+generateData()
+produceStats()
+displayData()
+displayStats()
+
+generateButton.addEventListener('click', (event) => {
+  clear()
+  generateData()
+  displayData()
+  produceStats()
+  displayStats()
+})
+
+/* --- high-level api --- */
+function generateData() {
+  data = createRandomTimelineStates(20, 20)
 }
 
 
-function createTimelineRowFromState(timelineRowState) {
+function displayData() {
+  for (timelineRowState of data) {
+    const timelineRow = createTimelineRowFromState(timelineRowState)
+    dataDisplayWrapper.append(timelineRow)
+  }
+}
 
+
+function displayStats() {
+  for (let metric in stats) {
+    const metricName = metric
+    const metricValue = stats[metric]
+    const metricWrapper = generateMetricWrapper(metricName, metricValue)
+    statsDisplayWrapper.appendChild(metricWrapper)
+  }
+}
+
+function produceStats() {
+  stats = {
+    bad: 10,
+    ok: 20,
+    good: 5,
+    banger: 5
+  }
+}
+
+function clear() {
+  dataDisplayWrapper.replaceChildren()
+  statsDisplayWrapper.replaceChildren()
+  data = null
+  stats = null
+}
+
+/* --- render helpers --- */
+function generateMetricWrapper(metricName, metricValue) {
+  const metricWrapper = document.createElement("div")
+  metricWrapper.className = "metric"
+  
+  const metricNameDisplay = document.createElement("strong")
+  const metricValueDisplay = document.createElement("span")
+
+  metricNameDisplay.textContent = metricName + ": "
+  metricValueDisplay.textContent = metricValue
+
+  metricWrapper.appendChild(metricNameDisplay)
+  metricWrapper.appendChild(metricValueDisplay)
+
+  return metricWrapper
+}
+
+/* --- generation functions --- */
+function createTimelineRowFromState(timelineRowState) {
+  const legalStates = ["bad", "ok", "good", "banger"]
   const timelineRowElement = document.createElement("div")
   timelineRowElement.className = "timeline-row"
   for (const state of timelineRowState) {
@@ -41,6 +107,7 @@ function createRandomTimelineStates(numRows, maxStates) {
 }
 
 function createRandomTimelineRow(maxStates) {
+  const legalStates = ["bad", "ok", "good", "banger"]
   const resultTimelineRow = []
   for(let stateIndex = 0; stateIndex < maxStates; stateIndex += 1) {
     const randomState = legalStates[
