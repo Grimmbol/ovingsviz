@@ -45,6 +45,31 @@ tune-timeline {
     grid-row: 2;
 }
 
+.timeline-row {
+    display: flex;
+    height: 20px;   
+}
+
+.timeline-row .segment {
+    width: 20px;
+}
+
+.segment[state="bad"]{
+    background-color: red;
+}
+
+.segment[state="ok"]{
+    background-color: yellow;
+}
+.segment[state="good"]{
+    background-color: green;
+}
+
+.segment[state="banger"]{
+    background-color: purple;
+}
+
+
 
 date-line span {
     flex-grow: 1;
