@@ -41,12 +41,20 @@ function displayStats() {
 }
 
 function produceStats() {
-  stats = {
-    bad: 10,
-    ok: 20,
-    good: 5,
-    banger: 5
+  const tempStats = {
+    bad: 0,
+    ok: 0,
+    good: 0,
+    banger: 0
   }
+
+  for(let timeLineRow of data) {
+    for(let entry of timeLineRow) {
+      tempStats[entry] += 1
+    }
+  }
+  
+  stats = tempStats
 }
 
 function clear() {
