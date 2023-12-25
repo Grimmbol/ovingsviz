@@ -1,42 +1,52 @@
-const dataDisplayWrapper = document.querySelector("rehersal-viz")
-const statsDisplayWrapper = document.querySelector("stats")
-const generateButton = document.querySelector("header .generate")
-let data = null
-let stats = null
+const dataDisplayWrapper = document.querySelector("rehersal-viz");
+const statsDisplayWrapper = document.querySelector("stats");
+const generateButton = document.querySelector("header .generate");
+let settings = {
+  startDate: "2023-01-01",
+  endDate: "2023-06-01"
+};
+let data = null;
+let stats = null;
 
-generateData()
-produceStats()
-displayData()
-displayStats()
+generateData();
+produceStats();
+displayData();
+displayStats();
 
 generateButton.addEventListener('click', (event) => {
-  clear()
-  generateData()
-  displayData()
-  produceStats()
-  displayStats()
-})
+  clear();
+  generateData();
+  displayData();
+  produceStats();
+  displayStats();
+});
 
 /* --- high-level api --- */
 function generateData() {
-  data = createRandomTimelineStates(20, 20)
+  data = {
+    gørpols: {
+      sjanger: "rørospols",
+      øvinger: {
+	"2023-01-01": "bad",
+	"2023-01-08": "good"
+      } 
+    },
+    svinsen: {
+      sjanger: "vals",
+      øvinger: {
+	"2023-01-01": "bad",
+	"2023-01-08": "good"
+      } 
+    },
+  };
 }
-
-
-function displayData() {
-  for (timelineRowState of data) {
-    const timelineRow = createTimelineRowFromState(timelineRowState)
-    dataDisplayWrapper.append(timelineRow)
-  }
-}
-
 
 function displayStats() {
   for (let metric in stats) {
-    const metricName = metric
-    const metricValue = stats[metric]
-    const metricWrapper = generateMetricWrapper(metricName, metricValue)
-    statsDisplayWrapper.appendChild(metricWrapper)
+    const metricName = metric;
+    const metricValue = stats[metric];
+    const metricWrapper = generateMetricWrapper(metricName, metricValue);
+    statsDisplayWrapper.appendChild(metricWrapper);
   }
 }
 
@@ -46,83 +56,133 @@ function produceStats() {
     ok: 0,
     good: 0,
     banger: 0
-  }
-
-  for(let timeLineRow of data) {
-    for(let entry of timeLineRow) {
-      tempStats[entry] += 1
-    }
-  }
-  
-  stats = tempStats
+  };
 }
 
 function clear() {
-  dataDisplayWrapper.replaceChildren()
-  statsDisplayWrapper.replaceChildren()
-  data = null
-  stats = null
+  dataDisplayWrapper.replaceChildren();
+  statsDisplayWrapper.replaceChildren();
+  data = null;
+  stats = null;
 }
+
+function displayData() {
+  const renderPlan = createRenderPlan(data, settings);
+  const newDomRender = createDomRender(renderPlan);
+
+  dataDisplayWrapper.appendChild(newDomRender);
+}
+
 
 /* --- render helpers --- */
-function generateMetricWrapper(metricName, metricValue) {
-  const metricWrapper = document.createElement("div")
-  metricWrapper.className = "metric"
-  
-  const metricNameDisplay = document.createElement("strong")
-  const metricValueDisplay = document.createElement("span")
 
-  metricNameDisplay.textContent = metricName + ": "
-  metricValueDisplay.textContent = metricValue
+/**
+ * A render plan is ordered, both in segments and timelines
+ * It should contain exactly what the 
+ */
+function createRenderPlan(rehersalData, renderSettings) {
+  return [
+    {
+      tuneInfo: {
+	title: "Gørpols",
+	genere: "rørospols",
+      },
+      segments: [
+	{
+	  length: "50px",
+	  state: "ok"
+	},
+	{
+	  length: "100px",
+	  state: "good"
+	}
+      ]
+    },
 
-  metricWrapper.appendChild(metricNameDisplay)
-  metricWrapper.appendChild(metricValueDisplay)
-
-  return metricWrapper
-}
-
-/* --- generation functions --- */
-function createTimelineRowFromState(timelineRowState) {
-  const legalStates = ["bad", "ok", "good", "banger"]
-  const timelineRowElement = document.createElement("div")
-  timelineRowElement.className = "timeline-row"
-  for (const state of timelineRowState) {
-    if(!legalStates.includes(state)) {
-      console.error(
-	`Could not create segment for state ${state}: legal states are ${legalStates}`
-      )
-      continue
+    {
+      tuneInfo: {
+	title: "Svinsen",
+	genere: "vals",
+      },
+      segments: [
+	{
+	  length: "50px",
+	  state: "bad"
+	},
+	{
+	  length: "100px",
+	  state: "ok"
+	},
+	{
+	  length: "50px",
+	  state: "good"
+	},
+      ]
     }
-    const newSegment = document.createElement("span")
-    newSegment.className = "segment"
-    newSegment.setAttribute("state", state)
-
-    timelineRowElement.appendChild(newSegment)
-    
-  }
-
-  return timelineRowElement
+  ];
 }
 
-function createRandomTimelineStates(numRows, maxStates) {
-  const resultStates = []
-  for(let curRowIndex = 0; curRowIndex < numRows; curRowIndex += 1) {
-    const randomRow = createRandomTimelineRow(maxStates)
-    resultStates.push(randomRow)
+function createDomRender(renderPlan) {
+  const timelineRowsWrapper = document.createElement("div");
+
+  for(let tuneRenderPlan of renderPlan) {
+    const timelineRow = document.createElement("div");
+    timelineRow.className = "timeline-row";
+
+    attatchInfoToTimelineRow(timelineRow, tuneRenderPlan.tuneInfo);
+    attatchSegmentsToTimelineRow(timelineRow, tuneRenderPlan.segments);
+
+    timelineRowsWrapper.appendChild(timelineRow);
   }
 
-  return resultStates
+  return timelineRowsWrapper;
 }
 
-function createRandomTimelineRow(maxStates) {
-  const legalStates = ["bad", "ok", "good", "banger"]
-  const resultTimelineRow = []
-  for(let stateIndex = 0; stateIndex < maxStates; stateIndex += 1) {
-    const randomState = legalStates[
-      Math.floor(Math.random() * legalStates.length)
-    ]
-    resultTimelineRow.push(randomState)
+function attatchSegmentsToTimelineRow(timelineRow, tuneSegments) {
+  const tuneTimelineElem = document.createElement("div");
+  tuneTimelineElem.className = "tune-timeline";
+
+  for(let segment of tuneSegments) {
+    const segmentElement = document.createElement("div");
+    segmentElement.className = "timeline-segment";
+    segmentElement.setAttribute("state", segment.state);
+    segmentElement.style.width = segment.length;
+
+    tuneTimelineElem.appendChild(segmentElement);
   }
 
-  return resultTimelineRow
+  timelineRow.appendChild(tuneTimelineElem);
+}
+
+function attatchInfoToTimelineRow(timelineRow, tuneInfo) {
+  const tuneInfoElem = document.createElement("div");
+  tuneInfoElem.className = "tune-info";
+
+  const title = document.createElement("h2");
+  title.textContent = tuneInfo.title;
+
+  const genere = document.createElement("span");
+  genere.textContent = tuneInfo.genere;
+
+  tuneInfoElem.appendChild(title);
+  tuneInfoElem.appendChild(genere);
+
+  timelineRow.appendChild(tuneInfoElem);
+}
+
+
+function generateMetricWrapper(metricName, metricValue) {
+  const metricWrapper = document.createElement("div");
+  metricWrapper.className = "metric";
+  
+  const metricNameDisplay = document.createElement("strong");
+  const metricValueDisplay = document.createElement("span");
+
+  metricNameDisplay.textContent = metricName + ": ";
+  metricValueDisplay.textContent = metricValue;
+
+  metricWrapper.appendChild(metricNameDisplay);
+  metricWrapper.appendChild(metricValueDisplay);
+
+  return metricWrapper;
 }

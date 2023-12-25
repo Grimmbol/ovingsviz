@@ -4,16 +4,21 @@ body {
     margin-right: 10vw;
 }
 
+header h1 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
 main {
     display: grid;
     grid-template-columns: auto auto
 }
 
 rehersal-viz {
+    margin-top: 20px;
     grid-column: 1;
     width: 300px;
     height: 300px;
-    border-style: solid;
     display: flex;
     flex-direction: column;
 }
@@ -24,26 +29,43 @@ stats {
 
 .timeline-row {
     display: flex;
-    height: 20px;
-    width: 100%
+    width: auto;
 }
 
-.timeline-row .segment {
-    width: 20px;
+.tune-info {
+    background-color: #eeeeee;
+    padding: 5px;
+    width: max(70px, 20%);
 }
 
-.segment[state="bad"]{
+.tune-info h2 {
+    font-size: 20px;
+}
+
+.tune-timeline {
+    display: flex;
+}
+
+#seg1 {
+    width: 50px;
+}
+
+#seg2 {
+    width: 100px;
+}
+
+.timeline-segment[state="bad"]{
     background-color: red;
 }
 
-.segment[state="ok"]{
+.timeline-segment[state="ok"]{
     background-color: yellow;
 }
-.segment[state="good"]{
+.timeline-segment[state="good"]{
     background-color: green;
 }
 
-.segment[state="banger"]{
+.timeline-segment[state="banger"]{
     background-color: purple;
 }
 
