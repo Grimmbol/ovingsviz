@@ -1,9 +1,9 @@
 const dataDisplayWrapper = document.querySelector("rehersal-viz");
 const statsDisplayWrapper = document.querySelector("stats");
 const generateButton = document.querySelector("header .generate");
-let settings = {
+let timelineRenderSettings = {
   startDate: "2023-01-01",
-  endDate: "2023-06-01"
+  endDate: "2023-01-30"
 };
 let data = null;
 let stats = null;
@@ -22,25 +22,6 @@ generateButton.addEventListener('click', (event) => {
 });
 
 /* --- high-level api --- */
-function generateData() {
-  data = {
-    gørpols: {
-      sjanger: "rørospols",
-      øvinger: {
-	"2023-01-01": "bad",
-	"2023-01-08": "good"
-      } 
-    },
-    svinsen: {
-      sjanger: "vals",
-      øvinger: {
-	"2023-01-01": "bad",
-	"2023-01-08": "good"
-      } 
-    },
-  };
-}
-
 function displayStats() {
   for (let metric in stats) {
     const metricName = metric;
@@ -67,7 +48,7 @@ function clear() {
 }
 
 function displayData() {
-  const renderPlan = createRenderPlan(data, settings);
+  const renderPlan = createRenderPlan(data, timelineRenderSettings);
   const newDomRender = createDomRender(renderPlan);
 
   dataDisplayWrapper.appendChild(newDomRender);
@@ -78,48 +59,57 @@ function displayData() {
 
 /**
  * A render plan is ordered, both in segments and timelines
- * It should contain exactly what the 
+ * It should contain exactly *what* and *how* the program needs
+ * to render the data, not *why*
  */
 function createRenderPlan(rehersalData, renderSettings) {
-  return [
-    {
-      tuneInfo: {
-	title: "Gørpols",
-	genere: "rørospols",
-      },
-      segments: [
-	{
-	  length: "50px",
-	  state: "ok"
-	},
-	{
-	  length: "100px",
-	  state: "good"
-	}
-      ]
-    },
+  const firstDay = Date.parse(renderSettings.startDate);
+  const lastDay = Date.parse(renderSettings.endDate);
+  const timelineElementWidthString = window.getComputedStyle(dataDisplayWrapper).width;
+  const timelineElementWidth =
+	parseInt(
+	  timelineElementWidthString
+	    .substring(0, timelineElementWidthString.search("px"))
+	);
+  
+  const timeBetweenStartAndEnd = lastDay - firstDay;
+  const resultRenderPlan = [];
+    
+  for(let tune in rehersalData){
+    const title = tune;
+    const tuneData = rehersalData[tune]; 
+    const genere = tuneData.genere;
+    const rehersals = tuneData.rehersals;
 
-    {
-      tuneInfo: {
-	title: "Svinsen",
-	genere: "vals",
-      },
-      segments: [
-	{
-	  length: "50px",
-	  state: "bad"
-	},
-	{
-	  length: "100px",
-	  state: "ok"
-	},
-	{
-	  length: "50px",
-	  state: "good"
-	},
-      ]
+
+    const renderSegmentsForTune = [];
+    let lastTimestamp = firstDay;
+    
+    for(let rehersalDate in rehersals) {
+      const rehersalState = rehersals[rehersalDate];
+
+      const rehersalTimestamp = Date.parse(rehersalDate);
+      const timeSinceLastTimestamp = rehersalTimestamp - lastTimestamp;
+      const pixelLengthForTimestamp =
+	    (timeSinceLastTimestamp / timeBetweenStartAndEnd)* timelineElementWidth;
+      lastTimestamp = rehersalTimestamp;
+
+      renderSegmentsForTune.push({
+	length: `${pixelLengthForTimestamp}px`,
+	state: rehersalState
+      });
     }
-  ];
+    
+    resultRenderPlan.push({
+      tuneInfo: {
+	title: title,
+	genere: genere,
+      },
+      segments: renderSegmentsForTune
+    });
+  }
+  
+  return resultRenderPlan;
 }
 
 function createDomRender(renderPlan) {
@@ -185,4 +175,24 @@ function generateMetricWrapper(metricName, metricValue) {
   metricWrapper.appendChild(metricValueDisplay);
 
   return metricWrapper;
+}
+
+/* --- Data generation  --- */
+function generateData() {
+  data = {
+    gørpols: {
+      genere: "rørospols",
+      rehersals: {
+	"2023-01-01": "bad",
+	"2023-01-08": "good"
+      } 
+    },
+    svinsen: {
+      genere: "vals",
+      rehersals: {
+	"2023-01-03": "bad",
+	"2023-01-15": "good"
+      } 
+    },
+  };
 }
