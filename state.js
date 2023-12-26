@@ -3,7 +3,7 @@ const statsDisplayWrapper = document.querySelector("stats");
 const generateButton = document.querySelector("header .generate");
 let timelineRenderSettings = {
   startDate: "2023-01-01",
-  endDate: "2023-01-30"
+  endDate: "2023-02-01"
 };
 let data = null;
 let stats = null;
@@ -51,6 +51,8 @@ function displayData() {
   const renderPlan = createRenderPlan(data, timelineRenderSettings);
   const newDomRender = createDomRender(renderPlan);
 
+  console.log(renderPlan);
+  
   dataDisplayWrapper.appendChild(newDomRender);
 }
 
@@ -70,7 +72,7 @@ function createRenderPlan(rehersalData, renderSettings) {
 	parseInt(
 	  timelineElementWidthString
 	    .substring(0, timelineElementWidthString.search("px"))
-	);
+	) - 80;
   
   const timeBetweenStartAndEnd = lastDay - firstDay;
   const resultRenderPlan = [];
@@ -84,6 +86,7 @@ function createRenderPlan(rehersalData, renderSettings) {
 
     const renderSegmentsForTune = [];
     let lastTimestamp = firstDay;
+    let lengthSoFar = 0;
     
     for(let rehersalDate in rehersals) {
       const rehersalState = rehersals[rehersalDate];
@@ -91,13 +94,25 @@ function createRenderPlan(rehersalData, renderSettings) {
       const rehersalTimestamp = Date.parse(rehersalDate);
       const timeSinceLastTimestamp = rehersalTimestamp - lastTimestamp;
       const pixelLengthForTimestamp =
-	    (timeSinceLastTimestamp / timeBetweenStartAndEnd)* timelineElementWidth;
+	    (timeSinceLastTimestamp / timeBetweenStartAndEnd) * timelineElementWidth;
       lastTimestamp = rehersalTimestamp;
+      lengthSoFar += pixelLengthForTimestamp;
 
+      
       renderSegmentsForTune.push({
 	length: `${pixelLengthForTimestamp}px`,
 	state: rehersalState
       });
+    }
+
+    if(lengthSoFar < timelineElementWidth) {
+      const lastSegment = renderSegmentsForTune[renderSegmentsForTune.length - 1];
+      const lengthOfLastSegment = parseInt(
+	lastSegment.length.substring(0, lastSegment.length.search("px"))
+      );
+      const missingDistance = timelineElementWidth - lengthSoFar;
+      const newSegmentDistance = lengthOfLastSegment + missingDistance;
+      lastSegment.length = `${newSegmentDistance}px`;
     }
     
     resultRenderPlan.push({
@@ -179,20 +194,83 @@ function generateMetricWrapper(metricName, metricValue) {
 
 /* --- Data generation  --- */
 function generateData() {
-  data = {
-    gørpols: {
+  const workingData = {};
+  const numTunes = 20;
+  const maxRehersals = 100;
+  
+  for(let i = 0; i < numTunes; i++) {
+    workingData[`pols${i}`] = {
       genere: "rørospols",
-      rehersals: {
-	"2023-01-01": "bad",
-	"2023-01-08": "good"
-      } 
-    },
-    svinsen: {
-      genere: "vals",
-      rehersals: {
-	"2023-01-03": "bad",
-	"2023-01-15": "good"
-      } 
-    },
-  };
+      rehersals: generateRandomRehersals(
+	new Date(timelineRenderSettings.startDate),
+	new Date(timelineRenderSettings.endDate),
+	maxRehersals
+      )
+    };
+  }
+
+  console.log(workingData);
+  
+  data = workingData;
 }
+
+function generateRandomRehersals(startDate, endDate, maxNumRehersals) {
+  const rehersals = {};
+  const minLenDays = 1;  
+  let maxRemainingRehersals = maxNumRehersals;
+  let currentLastDate = startDate;
+  while(maxRemainingRehersals > 0 && currentLastDate <= endDate) {
+    const newRehersalDate =
+	  getRandomDateInTimespan(
+	    currentLastDate,
+	    endDate,
+	    minLenDays
+	  );
+
+    if(newRehersalDate > endDate) {
+      break;
+    }
+    
+    const newRehersalDateString =
+      `${newRehersalDate.getFullYear()}-${newRehersalDate.getMonth() + 1}-${newRehersalDate.getDate()}`;
+    rehersals[newRehersalDateString] = getRandomRehersalState();
+
+    maxRemainingRehersals -= 1;
+    currentLastDate = newRehersalDate;
+  }
+
+  return rehersals;
+}
+
+function getRandomRehersalState() {
+  const rehersalStates = ["bad", "ok", "good", "banger"];
+  const randomIndex = getRandomInt(0, rehersalStates.length);
+
+  return rehersalStates[randomIndex];
+}
+
+
+function getRandomDateInTimespan(start, end, minLenDays) {
+  const startMillis = start.getTime();
+  const endMillis = end.getTime();
+
+  const randomDayOffsetRangeDays =
+	Math.floor((endMillis - startMillis) / (3600 * 24 * 1000));
+
+  const randomNumDays = getRandomInt(minLenDays, randomDayOffsetRangeDays);
+  const newOffsetDateMillis = startMillis + (randomNumDays * 3600 * 24 * 1000);
+  
+  const newOffsetDate = new Date(newOffsetDateMillis);
+  
+  return new Date(newOffsetDate);
+}
+
+/** From MDN 
+* https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random#getting_a_random_integer_between_two_values
+*/
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
+}
+
