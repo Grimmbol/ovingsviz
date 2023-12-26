@@ -3,7 +3,7 @@ const statsDisplayWrapper = document.querySelector("stats");
 const generateButton = document.querySelector("header .generate");
 let timelineRenderSettings = {
   startDate: "2023-01-01",
-  endDate: "2023-02-01"
+  endDate: "2023-07-01"
 };
 let data = null;
 let stats = null;
@@ -199,8 +199,8 @@ function generateMetricWrapper(metricName, metricValue) {
 /* --- Data generation  --- */
 function generateData() {
   const workingData = {};
-  const numTunes = 1;
-  const maxRehersals = 5;
+  const numTunes = 20;
+  const maxRehersals = 15;
   
   for(let i = 0; i < numTunes; i++) {
     workingData[`pols${i}`] = {
@@ -220,7 +220,7 @@ function generateData() {
 
 function generateRandomRehersals(startDate, endDate, maxNumRehersals) {
   const rehersals = {};
-  const minLenDays = 1;  
+  const minLenDays = 7;  
   let maxRemainingRehersals = maxNumRehersals;
   let currentLastDate = startDate;
   while(maxRemainingRehersals > 0 && currentLastDate <= endDate) {
