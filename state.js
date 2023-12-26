@@ -86,6 +86,7 @@ function createRenderPlan(rehersalData, renderSettings) {
 
     const renderSegmentsForTune = [];
     let lastTimestamp = firstDay;
+    let lastState = "unknown";
     let lengthSoFar = 0;
     
     for(let rehersalDate in rehersals) {
@@ -101,10 +102,13 @@ function createRenderPlan(rehersalData, renderSettings) {
       
       renderSegmentsForTune.push({
 	length: `${pixelLengthForTimestamp}px`,
-	state: rehersalState
+	state: lastState
       });
+
+      lastState = rehersalState;
     }
 
+    // Make the final segment fill the full length of the timeline
     if(lengthSoFar < timelineElementWidth) {
       const lastSegment = renderSegmentsForTune[renderSegmentsForTune.length - 1];
       const lengthOfLastSegment = parseInt(
@@ -195,8 +199,8 @@ function generateMetricWrapper(metricName, metricValue) {
 /* --- Data generation  --- */
 function generateData() {
   const workingData = {};
-  const numTunes = 20;
-  const maxRehersals = 100;
+  const numTunes = 1;
+  const maxRehersals = 5;
   
   for(let i = 0; i < numTunes; i++) {
     workingData[`pols${i}`] = {

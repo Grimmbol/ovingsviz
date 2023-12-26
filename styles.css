@@ -46,6 +46,10 @@ stats {
     display: flex;
 }
 
+.timeline-segment[state="unknown"]{
+    background-color: white;
+}
+
 .timeline-segment[state="bad"]{
     background-color: red;
 }
