@@ -17,40 +17,65 @@ main {
 rehersal-viz {
     margin-top: 20px;
     grid-column: 1;
-    width: 1200px;
-    height: 1000px;
+    width: 600px;
+    height: 500px;
     display: flex;
     flex-direction: column;
 }
 
-stats {
-    grid-column: 2;
-}
-
-.timeline-row {
+.viz-info {
     display: flex;
-    width: auto;
+    width: 100%;
 }
 
-.tune-info {
-    background-color: #eeeeee;
-    padding: 5px;
-    width: 70px;
+.table-title {
+    width: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
-.tune-info h2 {
-    font-size: 20px;
+/* timeline index */
+.timeline-index {
+    display: flex;
+    border-bottom: 2px solid #555555;
+    border-left: 2px solid #555555;
 }
 
-.tune-timeline {
+.timeline-index .year {
+    padding: 10px 20px 0px 20px;
+}
+
+.timeline-index .months {
+    list-style: none;
     display: flex;
 }
 
-.timeline-segment{
-    box-sizing: border-box;
-    border-left-style: solid;
-    border-left-width: 10px;
+.timeline-index .day {
+    display: flex;
 }
+
+.timeline-index .day notch {
+    width: 2px;
+    position: relative;
+    bottom: -0.4em;
+    left: 0.1em;
+    display: block;
+}
+
+/* Individual positioning */
+
+
+/*
+.timeline-index .year:nth-child(1) {
+    background-color: #eeeeee
+}
+
+.timeline-index .year:nth-child(2) {
+    background-color: #cccccc
+}*/
+
+/* timeline segments */
 
 .timeline-segment[state="unknown"]{
     border-color: white;

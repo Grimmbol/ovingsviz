@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>Statistikk for øvinger</title>
+    <meta charset="utf8"></meta>
     <link rel="stylesheet" href="./meyer-reset.css"/>
     <link rel="stylesheet" href="./styles.css"/>
   </head>
@@ -11,9 +13,54 @@
     </header>
     <main>
       <rehersal-viz>
+	<div class="viz-info">
+	  <div class="table-title">
+	    <span>Låter spilt</span>
+	  </div>
+	  <div class="timeline-index">
+	    <div class="year">
+	      <span>2023</span>
+	      <ol class="months">
+		<li class="month december">
+		  <span>desember</span>
+		   <ol class="days">
+		     <li class="day">
+		       <span>1.</span>
+		       <notch>|</notch>
+		    </li>
+		  </ol>
+		</li>
+	      </ol>
+	    </div>
+	    <div class="year">
+	      <span>2024</span>
+	      <ol class="months">
+		<li class="month january">
+		  <span>januar</span>
+		   <ol class="days">
+		     <li class="day">
+		       <span>1.</span>
+		       <notch>|</notch>
+		    </li>
+		  </ol>
+		</li>
+		<li class="month february">
+		  <span>februar</span>
+		  <ol class="days">
+		    <li class="day">
+		      <span>1.</span>
+		      <notch>|</notch>
+		    </li>
+		  </ol>
+		</li>
+	      </ol>
+	    </div>
+	    
+	  </div>
+	</div>
       </rehersal-viz>
       <stats></stats>
-      <script src="./state.js" type="text/javascript"></script> 
+      <script src="./state.js" type="module"></script> 
     </main>
   </body>
 </html>
