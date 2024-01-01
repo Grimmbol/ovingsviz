@@ -17,7 +17,7 @@ main {
 rehersal-viz {
     margin-top: 20px;
     grid-column: 1;
-    width: 600px;
+    width: 680px;
     height: 500px;
     display: flex;
     flex-direction: column;
@@ -43,16 +43,28 @@ rehersal-viz {
 }
 
 .timeline-index .year {
-    padding: 10px 20px 0px 20px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.timeline-index .year > span {
+    margin-bottom: 0.3em;
+    display: block;
 }
 
 .timeline-index .months {
     list-style: none;
     display: flex;
+    font-size: 14px;
+}
+
+.timeline-index .month {
+    width: 200px;
 }
 
 .timeline-index .day {
     display: flex;
+    font-weight: normal;
 }
 
 .timeline-index .day notch {
@@ -64,16 +76,17 @@ rehersal-viz {
 }
 
 /* Individual positioning */
-
-
-/*
-.timeline-index .year:nth-child(1) {
-    background-color: #eeeeee
+.timeline-index .month .days{
+    display: flex;
 }
 
-.timeline-index .year:nth-child(2) {
-    background-color: #cccccc
-}*/
+.timeline-index .month.january .day {
+    width: 25%;
+}
+
+.timeline-index .month.february .day {
+    width: 50%;
+}
 
 /* timeline segments */
 
