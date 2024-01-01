@@ -1,4 +1,4 @@
-import RehersalViz from "./ovingsviz.js";
+import RehersalExplorer from "./conponents/rehersalExplorer.js";
 import { generateData } from "./generate.js";
 
 const dataDisplayWrapper = document.querySelector("rehersal-viz");

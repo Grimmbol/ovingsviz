@@ -1,4 +1,4 @@
-export default class RehersalViz {
+export default class RehersalExplorer {
   constructor() {
     this.renderElement = null;
     this.data = null;

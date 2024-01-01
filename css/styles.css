@@ -21,6 +21,7 @@ rehersal-viz {
     height: 500px;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 .viz-info {
@@ -33,6 +34,11 @@ rehersal-viz {
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+/* SVG experiments */
+svg {
+    height: 500px;
 }
 
 /* timeline index */
@@ -68,11 +74,22 @@ rehersal-viz {
 }
 
 .timeline-index .day notch {
-    width: 2px;
     position: relative;
-    bottom: -0.4em;
+    bottom: -0.5em;
     left: 0.1em;
     display: block;
+}
+
+.timeline-index .day notch[type="rehersal"] {
+    width: 1em;
+    height: 1em;
+    background-color: black;
+}
+
+.timeline-index .day notch[type="concert"] {
+    width: 1em;
+    height: 1em;
+    background-color: grey;
 }
 
 /* Individual positioning */
