@@ -71,6 +71,8 @@ svg {
 .timeline-index .day {
     display: flex;
     font-weight: normal;
+    flex-direction: column;
+    align-items: center;
 }
 
 .timeline-index .day notch {
@@ -95,14 +97,27 @@ svg {
 /* Individual positioning */
 .timeline-index .month .days{
     display: flex;
+    position: relative;
 }
 
 .timeline-index .month.january .day {
-    width: 25%;
+    position: absolute;
+}
+
+.timeline-index .month.january .day:nth-of-type(2) {
+    left: 25%;
+}
+
+.timeline-index .month.january .day:nth-of-type(3) {
+    left: 50%;
+}
+
+.timeline-index .month.january .day:nth-of-type(4) {
+    left: 75%;
 }
 
 .timeline-index .month.february .day {
-    width: 50%;
+    margin-right: 50%;
 }
 
 /* timeline segments */
